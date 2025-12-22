@@ -71,6 +71,7 @@
 		961790E92EE8E80A0034F637 /* PhotoGuideUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGuideUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		9686116A2EE9C12A00DE7EC3 /* ShutterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShutterButton.swift; sourceTree = "<group>"; };
 		9686116C2EE9C25500DE7EC3 /* ScrollableSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableSegment.swift; sourceTree = "<group>"; };
+		9698EE732EF9496C00DFB1C0 /* .gitignore.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = .gitignore.md; sourceTree = "<group>"; };
 		96C7E74D2EEA2ADC00016C46 /* OverlayElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayElements.swift; sourceTree = "<group>"; };
 		96C7E7512EEA2E8300016C46 /* DynamicSymmetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSymmetry.swift; sourceTree = "<group>"; };
 		96C7E7532EEA2EA800016C46 /* GeometryMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryMapping.swift; sourceTree = "<group>"; };
@@ -129,6 +130,7 @@
 		961790C02EE8E8070034F637 = {
 			isa = PBXGroup;
 			children = (
+				9698EE732EF9496C00DFB1C0 /* .gitignore.md */,
 				961790CB2EE8E8070034F637 /* PhotoGuide */,
 				961790DC2EE8E8090034F637 /* PhotoGuideTests */,
 				961790E62EE8E8090034F637 /* PhotoGuideUITests */,
