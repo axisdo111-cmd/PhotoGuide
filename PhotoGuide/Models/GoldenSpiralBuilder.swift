@@ -76,7 +76,7 @@ func buildGoldenSpiralElements(
     
     var direction: SpiralDirection = .up
     
-    for i in 0..<config.steps {
+    for _ in 0..<config.steps {
         
         let side = min(rect.width, rect.height)
         
