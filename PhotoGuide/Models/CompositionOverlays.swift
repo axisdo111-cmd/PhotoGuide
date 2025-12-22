@@ -218,7 +218,7 @@ func fibonacciSquares(
     // In iOS coordinates: y increases downward.
     // If you want a spiral that visually starts near the TOP edge and goes clockwise,
     // the most reliable is: first square at TOP-LEFT of the sensor rect.
-    var dir: SpiralDir = clockwise ? .right : .down
+    var dir: SpiralDir = .right
 
     for _ in 0..<steps {
         let side = min(rect.width, rect.height)
@@ -227,26 +227,52 @@ func fibonacciSquares(
         let remaining: CGRect
 
         switch dir {
+
         case .right:
-            // square on LEFT, remainder on RIGHT
-            square = CGRect(x: rect.minX, y: rect.minY, width: side, height: side)
-            remaining = CGRect(x: rect.minX + side, y: rect.minY, width: rect.width - side, height: rect.height)
+            // carré en HAUT-GAUCHE
+            square = CGRect(x: rect.minX,
+                            y: rect.minY,
+                            width: side,
+                            height: side)
+            remaining = CGRect(x: rect.minX + side,
+                               y: rect.minY,
+                               width: rect.width - side,
+                               height: rect.height)
 
         case .down:
-            // square on TOP, remainder on BOTTOM
-            square = CGRect(x: rect.minX, y: rect.minY, width: side, height: side)
-            remaining = CGRect(x: rect.minX, y: rect.minY + side, width: rect.width, height: rect.height - side)
+            // carré en HAUT-DROITE
+            square = CGRect(x: rect.maxX - side,
+                            y: rect.minY,
+                            width: side,
+                            height: side)
+            remaining = CGRect(x: rect.minX,
+                               y: rect.minY + side,
+                               width: rect.width,
+                               height: rect.height - side)
 
         case .left:
-            // square on RIGHT, remainder on LEFT
-            square = CGRect(x: rect.maxX - side, y: rect.minY, width: side, height: side)
-            remaining = CGRect(x: rect.minX, y: rect.minY, width: rect.width - side, height: rect.height)
+            // carré en BAS-DROITE
+            square = CGRect(x: rect.maxX - side,
+                            y: rect.maxY - side,
+                            width: side,
+                            height: side)
+            remaining = CGRect(x: rect.minX,
+                               y: rect.minY,
+                               width: rect.width - side,
+                               height: rect.height)
 
         case .up:
-            // square on BOTTOM, remainder on TOP
-            square = CGRect(x: rect.minX, y: rect.maxY - side, width: side, height: side)
-            remaining = CGRect(x: rect.minX, y: rect.minY, width: rect.width, height: rect.height - side)
+            // carré en BAS-GAUCHE
+            square = CGRect(x: rect.minX,
+                            y: rect.maxY - side,
+                            width: side,
+                            height: side)
+            remaining = CGRect(x: rect.minX,
+                               y: rect.minY,
+                               width: rect.width,
+                               height: rect.height - side)
         }
+
 
         squares.append(square)
         rect = remaining

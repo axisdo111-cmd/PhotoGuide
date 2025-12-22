@@ -73,8 +73,8 @@ class CompositionViewModel: ObservableObject {
 
         // Rule of thirds – add focal points
         case .ruleOfThirds:
-            for x in [1/3, 2/3] {
-                for y in [1/3, 2/3] {
+            for x in [1.0/3.0, 2.0/3.0] {
+                for y in [1.0/3.0, 2.0/3.0] {
                     rendered.append(.highlightPoint(.init(x: x, y: y)))
                 }
             }
