@@ -56,26 +56,53 @@ func buildGoldenSpiralElements(
     
     let aspect = config.aspectRatio
     
-    // Rectangle de départ (capteur, normalisé 0–1)
-    var rect: CGRect
+    // Rectangle du capteur (normalisé 0–1)
+    let sensorRect: CGRect
     if aspect >= 1 {
-        rect = CGRect(
+        sensorRect = CGRect(
             x: 0,
             y: (1 - 1 / aspect) / 2,
             width: 1,
             height: 1 / aspect
         )
     } else {
-        rect = CGRect(
+        sensorRect = CGRect(
             x: (1 - aspect) / 2,
             y: 0,
             width: aspect,
             height: 1
         )
     }
+
+    // Rectangle d’or centré dans le capteur (évite les spirales "déformées")
+    let phi: CGFloat = (1 + sqrt(5)) / 2
+    let sensorAspect = sensorRect.width / max(sensorRect.height, 0.0001)
+    let goldenRect: CGRect
+    if sensorAspect >= phi {
+        let h = sensorRect.height
+        let w = h * phi
+        goldenRect = CGRect(
+            x: sensorRect.midX - w / 2,
+            y: sensorRect.minY,
+            width: w,
+            height: h
+        )
+    } else {
+        let w = sensorRect.width
+        let h = w / phi
+        goldenRect = CGRect(
+            x: sensorRect.minX,
+            y: sensorRect.midY - h / 2,
+            width: w,
+            height: h
+        )
+    }
+    
+    var rect = goldenRect
     
     var direction: SpiralDirection = .up
-    
+    let sampleCount = max(config.samplesPerArc, 1)
+
     for _ in 0..<config.steps {
         
         let side = min(rect.width, rect.height)
@@ -84,7 +111,6 @@ func buildGoldenSpiralElements(
         let remaining: CGRect
         
         switch direction {
-            
         case .up:
             // carré en haut à droite
             square = CGRect(
@@ -98,6 +124,21 @@ func buildGoldenSpiralElements(
                 y: rect.minY + side,
                 width: rect.width,
                 height: rect.height - side
+            )
+            
+        case .left:
+            // carré en haut à gauche
+            square = CGRect(
+                x: rect.minX,
+                y: rect.minY,
+                width: side,
+                height: side
+            )
+            remaining = CGRect(
+                x: rect.minX + side,
+                y: rect.minY,
+                width: rect.width - side,
+                height: rect.height
             )
             
         case .right:
@@ -129,29 +170,13 @@ func buildGoldenSpiralElements(
                 width: rect.width,
                 height: rect.height - side
             )
-            
-        case .left:
-            // carré en haut à gauche
-            square = CGRect(
-                x: rect.minX,
-                y: rect.minY,
-                width: side,
-                height: side
-            )
-            remaining = CGRect(
-                x: rect.minX + side,
-                y: rect.minY,
-                width: rect.width - side,
-                height: rect.height
-            )
         }
         
         // Quart de cercle
         let arc = quarterCircle(
             in: square,
             direction: direction,
-            samples: config.samplesPerArc,
-            mirror: config.mirror
+            samples: config.samplesPerArc
         )
         
         elements.append(.curve(OverlayCurve(points: arc)))
@@ -169,8 +194,12 @@ func buildGoldenSpiralElements(
         }
         
     }
+    if config.mirror {
+        return elements.map { mirrorElement($0) }
+    }
     return elements
 }
+
     
 // ====================================================
 // MARK: - Helpers
@@ -178,11 +207,10 @@ func buildGoldenSpiralElements(
 func quarterCircle(
     in rect: CGRect,
     direction: SpiralDirection,
-    samples: Int,
-    mirror: Bool
+    samples: Int
 ) -> [CGPoint] {
     
-    let radius = rect.width
+    let radius = rect.size.width
     let center: CGPoint
     let startAngle: CGFloat
     let endAngle: CGFloat
@@ -225,16 +253,28 @@ func quarterCircle(
             y: center.y + sin(angle) * radius
         )
         
-        if mirror {
-            p.x = 1 - p.x
-        }
-        
         points.append(p)
     }
     
     return points
 }
 
+private func mirrorElement(_ element: OverlayElement) -> OverlayElement {
+    switch element {
+    case .line(let line):
+        return .line(OverlayLine(
+            x1: 1 - line.x1,
+            y1: line.y1,
+            x2: 1 - line.x2,
+            y2: line.y2
+        ))
+    case .curve(let curve):
+        let mirrored = curve.points.map { CGPoint(x: 1 - $0.x, y: $0.y) }
+        return .curve(OverlayCurve(points: mirrored))
+    case .highlightPoint(let point):
+        return .highlightPoint(CGPoint(x: 1 - point.x, y: point.y))
+    }
+}
 
 private func rotate(point: CGPoint, angle: Angle) -> CGPoint {
     let c = cos(angle.radians)

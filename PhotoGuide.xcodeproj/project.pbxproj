@@ -14,6 +14,7 @@
 		961790EA2EE8E80A0034F637 /* PhotoGuideUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961790E92EE8E80A0034F637 /* PhotoGuideUITestsLaunchTests.swift */; };
 		9686116B2EE9C12A00DE7EC3 /* ShutterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9686116A2EE9C12A00DE7EC3 /* ShutterButton.swift */; };
 		9686116D2EE9C25500DE7EC3 /* ScrollableSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9686116C2EE9C25500DE7EC3 /* ScrollableSegment.swift */; };
+		9698EE752EF9570E00DFB1C0 /* CameraGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9698EE742EF9570E00DFB1C0 /* CameraGeometry.swift */; };
 		96C7E74E2EEA2ADC00016C46 /* OverlayElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C7E74D2EEA2ADC00016C46 /* OverlayElements.swift */; };
 		96C7E7522EEA2E8300016C46 /* DynamicSymmetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C7E7512EEA2E8300016C46 /* DynamicSymmetry.swift */; };
 		96C7E7542EEA2EA800016C46 /* GeometryMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C7E7532EEA2EA800016C46 /* GeometryMapping.swift */; };
@@ -72,6 +73,7 @@
 		9686116A2EE9C12A00DE7EC3 /* ShutterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShutterButton.swift; sourceTree = "<group>"; };
 		9686116C2EE9C25500DE7EC3 /* ScrollableSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableSegment.swift; sourceTree = "<group>"; };
 		9698EE732EF9496C00DFB1C0 /* .gitignore.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = .gitignore.md; sourceTree = "<group>"; };
+		9698EE742EF9570E00DFB1C0 /* CameraGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraGeometry.swift; sourceTree = "<group>"; };
 		96C7E74D2EEA2ADC00016C46 /* OverlayElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayElements.swift; sourceTree = "<group>"; };
 		96C7E7512EEA2E8300016C46 /* DynamicSymmetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSymmetry.swift; sourceTree = "<group>"; };
 		96C7E7532EEA2EA800016C46 /* GeometryMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryMapping.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 			children = (
 				96F0A4432EE94E9F00879422 /* CameraView.swift */,
 				96F0A4452EE94EBB00879422 /* CameraManager.swift */,
+				9698EE742EF9570E00DFB1C0 /* CameraGeometry.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				96F1C46D2EEC045A001DFB97 /* HarmonyModeButton.swift in Sources */,
 				96F0A44C2EE9504300879422 /* ExposureTriangle.swift in Sources */,
 				96F0A43E2EE94E2C00879422 /* CompositionViewModel.swift in Sources */,
+				9698EE752EF9570E00DFB1C0 /* CameraGeometry.swift in Sources */,
 				96F0A4402EE94E5500879422 /* CompositionOverlay.swift in Sources */,
 				96F0A4522EE9524C00879422 /* ToolPaneMode.swift in Sources */,
 				96C7E7562EEA315C00016C46 /* AdvancedCompositionOverlay.swift in Sources */,

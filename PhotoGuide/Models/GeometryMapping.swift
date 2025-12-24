@@ -22,55 +22,47 @@ func sensorFrame(in size: CGSize, aspect: CGFloat) -> CGRect {
     }
 }
 
-/// Applique l'orientation portrait/paysage aux points normalisés
-func mapNormalized(_ p: CGPoint,
-                   in rect: CGRect,
-                   isLandscape: Bool) -> CGPoint {
-    
-    let nx: CGFloat
-    let ny: CGFloat
-    
-    if isLandscape {
-        nx = p.y
-        ny = 1 - p.x
+// MARK: - Camera visible frame (aspectFill, UNIQUE SOURCE)
+func cameraVisibleFrame(
+    container: CGSize,
+    cameraAspect: CGFloat
+) -> CGRect {
+
+    let containerAspect = container.width / container.height
+
+    if containerAspect > cameraAspect {
+        // écran trop large → crop horizontal
+        let height = container.height
+        let width = height * cameraAspect
+        let x = (container.width - width) / 2
+        return CGRect(x: x, y: 0, width: width, height: height)
     } else {
-        nx = p.x
-        ny = p.y
+        // écran trop haut → crop vertical
+        let width = container.width
+        let height = width / cameraAspect
+        let y = (container.height - height) / 2
+        return CGRect(x: 0, y: y, width: width, height: height)
     }
-    
-    return CGPoint(
-        x: rect.minX + nx * rect.width,
-        y: rect.minY + ny * rect.height
-    )
 }
 
-/// Mapping spécifique aux spirales (évite toute double transformation)
+// MARK: - Normalized → Screen mapping (NO ROTATION)
 func mapSpiralPoint(
     _ p: CGPoint,
     size: CGSize,
-    sensorAspect: CGFloat,
-    isLandscape: Bool
+    sensorAspect: CGFloat
 ) -> CGPoint {
 
-    // Cadre capteur réel dans l’écran
-    let rect = sensorFrame(in: size, aspect: sensorAspect)
+    let frame = cameraVisibleFrame(
+        container: size,
+        cameraAspect: sensorAspect
+    )
 
-    // Orientation device
-    let nx: CGFloat
-    let ny: CGFloat
-
-    if isLandscape {
-        nx = p.y
-        ny = 1 - p.x
-    } else {
-        nx = p.x
-        ny = p.y
-    }
-
-    // Projection directe → écran
     return CGPoint(
-        x: rect.minX + nx * rect.width,
-        y: rect.minY + ny * rect.height
+        x: frame.minX + p.x * frame.width,
+        y: frame.minY + p.y * frame.height
     )
 }
+
+
+
 

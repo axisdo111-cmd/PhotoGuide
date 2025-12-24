@@ -15,7 +15,7 @@ struct CompositionOverlay: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                ForEach(vm.elements) { element in
+                ForEach(Array(vm.elements.enumerated()), id: \.offset) { _, element in
                     elementView(
                         element,
                         geo: geo
@@ -49,15 +49,13 @@ struct CompositionOverlay: View {
                 let p1 = mapSpiralPoint(
                     CGPoint(x: l.x1, y: l.y1),
                     size: geo.size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: orientation.isLandscape
+                    sensorAspect: vm.spiralConfig.aspectRatio
                 )
 
                 let p2 = mapSpiralPoint(
                     CGPoint(x: l.x2, y: l.y2),
                     size: geo.size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: orientation.isLandscape
+                    sensorAspect: vm.spiralConfig.aspectRatio
                 )
 
                 path.move(to: p1)
@@ -76,8 +74,7 @@ struct CompositionOverlay: View {
                     to: mapSpiralPoint(
                         first,
                         size: geo.size,
-                        sensorAspect: vm.spiralConfig.aspectRatio,
-                        isLandscape: orientation.isLandscape
+                        sensorAspect: vm.spiralConfig.aspectRatio
                     )
                 )
 
@@ -86,8 +83,7 @@ struct CompositionOverlay: View {
                         to: mapSpiralPoint(
                             p,
                             size: geo.size,
-                            sensorAspect: vm.spiralConfig.aspectRatio,
-                            isLandscape: orientation.isLandscape
+                            sensorAspect: vm.spiralConfig.aspectRatio
                         )
                     )
                 }
@@ -101,8 +97,7 @@ struct CompositionOverlay: View {
             let pp = mapSpiralPoint(
                 p,
                 size: geo.size,
-                sensorAspect: vm.spiralConfig.aspectRatio,
-                isLandscape: orientation.isLandscape
+                sensorAspect: vm.spiralConfig.aspectRatio
             )
 
             Circle()
@@ -112,6 +107,7 @@ struct CompositionOverlay: View {
                 )
                 .frame(width: 24, height: 24)
                 .position(pp)
+
         }
     }
 }

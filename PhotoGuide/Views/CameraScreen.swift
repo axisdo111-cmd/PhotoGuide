@@ -8,51 +8,77 @@
 import SwiftUI
 
 struct CameraScreen: View {
-    
+
+    // MARK: - ViewModels
     @StateObject private var cam          = CameraManager()
     @StateObject private var composition  = CompositionViewModel()
     @StateObject private var exposure     = ExposureViewModel()
     @StateObject private var colorVM      = ColorHarmonyViewModel()
-    @StateObject private var orientation = OrientationManager()
-    
-    @State private var showThumbnail = false
-    @State private var toolMode: ToolPanelMode = .composition
-    @State private var showLastPhoto = false
-    @State private var showPanel = true   // ← cacher/montrer le panneau
+    @StateObject private var orientation  = OrientationManager()
 
+    // MARK: - UI State
+    @State private var showThumbnail = false
+    @State private var showLastPhoto = false
+    @State private var toolMode: ToolPanelMode = .composition
+    @State private var showPanel = true
+
+    // MARK: - Body
     var body: some View {
         GeometryReader { geo in
             let safeArea = geo.safeAreaInsets
 
             ZStack {
+
+                // =========================
+                // CAMERA PREVIEW
+                // =========================
                 CameraView(session: cam.session)
-                    .environmentObject(orientation)     // ← ESSENTIEL
+                    .environmentObject(orientation)
                     .ignoresSafeArea()
 
-                AdvancedCompositionOverlay(vm: composition, sensorAspect: 4.0/3.0)
-                    .environmentObject(orientation)     // ← ESSENTIEL
-                    .ignoresSafeArea()
+                // =========================
+                // COMPOSITION OVERLAY
+                // =========================
+                AdvancedCompositionOverlay(
+                    vm: composition,
+                    sensorAspect: composition.spiralConfig.aspectRatio
+                )
+                .environmentObject(orientation)
+                .ignoresSafeArea()
 
+                // =========================
+                // CAPTURE CONTROLS
+                // =========================
                 captureControls(safeArea: safeArea)
 
+                // =========================
+                // MAIN TOOL PANEL
+                // =========================
                 if showPanel {
                     VStack {
                         Spacer()
-                        MainToolPanel(mode: $toolMode,
-                                      compositionVM: composition,
-                                      exposureVM: exposure,
-                                      colorVM: colorVM)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .padding(.bottom, safeArea.bottom + 10)
+                        MainToolPanel(
+                            mode: $toolMode,
+                            compositionVM: composition,
+                            exposureVM: exposure,
+                            colorVM: colorVM
+                        )
+                        .padding(.bottom, safeArea.bottom + 10)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
 
+                // =========================
+                // PANEL TOGGLE BUTTON
+                // =========================
                 panelToggleButton(safeArea: safeArea)
             }
+            // =========================
+            // CAMERA → OVERLAY RATIO SYNC
+            // =========================
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
-
 
     // MARK: - Bouton show/hide MainToolPanel
     private func panelToggleButton(safeArea: EdgeInsets) -> some View {
@@ -71,11 +97,11 @@ struct CameraScreen: View {
                     .clipShape(Circle())
                     .shadow(radius: 10)
             }
-            .padding(.bottom, showPanel ? safeArea.bottom + 260 : safeArea.bottom + 60)
+            .padding(.bottom, showPanel ? safeArea.bottom + 260
+                                        : safeArea.bottom + 60)
         }
         .animation(.easeInOut, value: showPanel)
     }
-
 
     // MARK: - UI capture & overlay
     private func captureControls(safeArea: EdgeInsets) -> some View {
@@ -83,6 +109,8 @@ struct CameraScreen: View {
             Spacer()
 
             HStack {
+
+                // Thumbnail
                 if showThumbnail, let image = cam.capturedImage {
                     Button {
                         showLastPhoto = true
@@ -97,23 +125,20 @@ struct CameraScreen: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(.white, lineWidth: 1)
                             )
-                            .transition(.scale.combined(with: .opacity))
-                            .animation(.easeInOut, value: showThumbnail)
                     }
                     .padding(.leading, 24)
+                    .transition(.scale.combined(with: .opacity))
                 } else {
                     Spacer().frame(width: 74)
                 }
 
-
                 Spacer()
 
-                // Bouton de prise de vue
+                // Shutter
                 ShutterButton {
                     cam.takePhoto()
-
-                    // Affiche la vignette pendant 5 sec
                     showThumbnail = true
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                         withAnimation {
                             showThumbnail = false
@@ -121,12 +146,13 @@ struct CameraScreen: View {
                     }
                 }
 
-
                 Spacer()
                 Spacer().frame(width: 74)
             }
-            .padding(.bottom, showPanel ? safeArea.bottom + 120 : safeArea.bottom + 40)
+            .padding(.bottom,
+                     showPanel
+                     ? safeArea.bottom + 120
+                     : safeArea.bottom + 40)
         }
     }
-
 }

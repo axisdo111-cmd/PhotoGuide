@@ -11,34 +11,23 @@ import SwiftUI
 struct AdvancedCompositionOverlay: View {
 
     @ObservedObject var vm: CompositionViewModel
-    @EnvironmentObject var orientation: OrientationManager   // ← IMPORTANT
     let sensorAspect: CGFloat
-    
-    @State private var progress: CGFloat = 0
 
+    @State private var progress: CGFloat = 0
 
     var body: some View {
         GeometryReader { geo in
             let size = geo.size
-            let isLandscape = orientation.isLandscape
 
             ZStack {
-                drawLines(size: size, isLandscape: isLandscape)
-                drawCurves(size: size, isLandscape: isLandscape)
-                drawHighlights(size: size, isLandscape: isLandscape)
+                drawLines(size: size)
+                drawCurves(size: size)
+                drawHighlights(size: size)
             }
             .onAppear {
                 progress = 0
                 withAnimation(.easeInOut(duration: 6.0)) {
                     progress = 1
-                }
-            }
-
-            .onChange(of: size) { _, newSize in
-                let newRatio = newSize.width / max(newSize.height, 1)
-
-                if abs(vm.spiralConfig.aspectRatio - newRatio) > 0.001 {
-                    vm.spiralConfig.aspectRatio = newRatio
                 }
             }
         }
@@ -49,28 +38,25 @@ struct AdvancedCompositionOverlay: View {
 // MARK: - LIGNES
 extension AdvancedCompositionOverlay {
 
-    func drawLines(size: CGSize, isLandscape: Bool) -> some View {
+    func drawLines(size: CGSize) -> some View {
         Path { path in
             for case let .line(line) in vm.elements {
 
                 let p1 = mapSpiralPoint(
                     CGPoint(x: line.x1, y: line.y1),
                     size: size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: isLandscape
+                    sensorAspect: sensorAspect
                 )
 
                 let p2 = mapSpiralPoint(
                     CGPoint(x: line.x2, y: line.y2),
                     size: size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: isLandscape
+                    sensorAspect: sensorAspect
                 )
 
                 path.move(to: p1)
                 path.addLine(to: p2)
             }
-
         }
         .trim(from: 0, to: progress)
         .stroke(
@@ -87,7 +73,7 @@ extension AdvancedCompositionOverlay {
 // MARK: - COURBES
 extension AdvancedCompositionOverlay {
 
-    func drawCurves(size: CGSize, isLandscape: Bool) -> some View {
+    func drawCurves(size: CGSize) -> some View {
         Path { path in
             for case let .curve(curve) in vm.elements {
                 guard let first = curve.points.first else { continue }
@@ -95,48 +81,48 @@ extension AdvancedCompositionOverlay {
                 let start = mapSpiralPoint(
                     first,
                     size: size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: isLandscape
+                    sensorAspect: sensorAspect
                 )
 
                 path.move(to: start)
 
                 for p in curve.points.dropFirst() {
-                    path.addLine(to: mapSpiralPoint(
-                        p,
-                        size: size,
-                        sensorAspect: vm.spiralConfig.aspectRatio,
-                        isLandscape: isLandscape
-                    ))
-
-
+                    path.addLine(
+                        to: mapSpiralPoint(
+                            p,
+                            size: size,
+                            sensorAspect: sensorAspect
+                        )
+                    )
                 }
             }
         }
         .trim(from: 0, to: progress)
-        .stroke(vm.lineColor.opacity(vm.lineOpacity),
-                style: StrokeStyle(lineWidth: vm.lineWidth + 0.4))
+        .stroke(
+            vm.lineColor.opacity(vm.lineOpacity),
+            style: StrokeStyle(lineWidth: vm.lineWidth + 0.4)
+        )
     }
 }
 
 // MARK: - POINTS
 extension AdvancedCompositionOverlay {
 
-    func drawHighlights(size: CGSize, isLandscape: Bool) -> some View {
-        ForEach(vm.elements) { element in
+    func drawHighlights(size: CGSize) -> some View {
+        ForEach(Array(vm.elements.enumerated()), id: \.offset) { _, element in
             if case let .highlightPoint(p) = element {
-                
+
                 let pos = mapSpiralPoint(
                     p,
                     size: size,
-                    sensorAspect: vm.spiralConfig.aspectRatio,
-                    isLandscape: isLandscape
+                    sensorAspect: sensorAspect
                 )
 
                 Circle()
-                    .fill(vm.lineColor)
-                    .frame(width: 8, height: 8)
+                    .fill(Color.red)
+                    .frame(width: 12, height: 12)
                     .position(pos)
+
             }
         }
     }
