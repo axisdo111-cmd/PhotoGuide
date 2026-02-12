@@ -101,7 +101,7 @@ func buildGoldenSpiralElements(
     var rect = goldenRect
     
     var direction: SpiralDirection = .up
-    let sampleCount = max(config.samplesPerArc, 1)
+    //let sampleCount = max(config.samplesPerArc, 1)
 
     for _ in 0..<config.steps {
         
@@ -248,7 +248,7 @@ func quarterCircle(
         let t = CGFloat(i) / CGFloat(samples)
         let angle = startAngle + t * (endAngle - startAngle)
         
-        var p = CGPoint(
+        let p = CGPoint(
             x: center.x + cos(angle) * radius,
             y: center.y + sin(angle) * radius
         )
